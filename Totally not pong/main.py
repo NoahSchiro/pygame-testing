@@ -8,19 +8,54 @@ WHITE = 255,255,255
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Totally not pong")
-FPS = 60
+FPS = 120
 clock = pygame.time.Clock()
 
+class Paddle(pygame.sprite.Sprite):
 
-playerWidth = 10
-playerHeight = 100
-dy = 3
+    def __init__(self):
+
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface([10, 75])
+        self.image.fill(WHITE)
+        self.rect = self.image.get_rect()
+
+        self.points = 0
+
+class Ball(pygame.sprite.Sprite):
+
+    def __init__(self):
+
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface([10,10])
+        self.image.fill(WHITE)
+        self.rect = self.image.get_rect()
+        self.speed = 15
+        self.dx = -1
+        self.dy = 1
 
 
-player1 = pygame.draw.rect(WIN, WHITE, (0 + 20, HEIGHT/2, playerWidth, playerHeight))
+paddleSpeed = 4
 
-player2 = pygame.draw.rect(WIN, WHITE, (WIDTH - 20 - playerWidth, HEIGHT/2, playerWidth, playerHeight))
+paddle1 = Paddle()
+paddle1.rect.x = 10
+paddle1.rect.y = HEIGHT/2
 
+paddle2 = Paddle()
+paddle2.rect.x = WIDTH - 10 - 10
+paddle2.rect.y = HEIGHT/2
+
+pong = Ball()
+pong.rect.x = WIDTH / 2
+pong.rect.y = HEIGHT / 2
+
+all_sprites = pygame.sprite.Group()
+all_sprites.add(paddle1,paddle2,pong)
+
+def draw_screen():
+    WIN.fill(BLACK)
+    all_sprites.draw(WIN)
+    pygame.display.update()
 
 while 1:
 
@@ -31,11 +66,50 @@ while 1:
 
     # Capped FPS
     clock.tick(FPS)
-    WIN.fill(BLACK)
 
-    pygame.draw.rect(WIN, WHITE, player1)
-    pygame.draw.rect(WIN, WHITE, player2)
+    # Checks for key presses to move the paddles
+    key = pygame.key.get_pressed()
+    if key[pygame.K_w]:
+        paddle1.rect.y -= paddleSpeed
+    if key[pygame.K_s]:
+        paddle1.rect.y += paddleSpeed
+    if key[pygame.K_DOWN]:
+        paddle2.rect.y += paddleSpeed
+    if key[pygame.K_UP]:
+        paddle2.rect.y -= paddleSpeed
 
-    if
+    # Moves the ball at set speed
+    pong.rect.x += pong.dx
+    pong.rect.y += pong.dy
 
-    pygame.display.update()
+    # Pong collision detection
+    if pong.rect.y >= HEIGHT - 10 or pong.rect.y <= 0:
+        pong.dy *= -1
+    
+    if pong.rect.x >= WIDTH - 10 or pong.rect.x <= 0:
+        pong.rect.y = HEIGHT / 2
+        pong.rect.x = WIDTH / 2
+    
+    # Paddle collision detection
+    if paddle1.rect.y >= HEIGHT - 75:
+        paddle1.rect.y = HEIGHT - 75
+    if paddle1.rect.y <= 0:
+        paddle1.rect.y = 0
+    if paddle2.rect.y >= HEIGHT - 75:
+        paddle2.rect.y = HEIGHT - 75
+    if paddle2.rect.y <= 0:
+        paddle2.rect.y = 0
+    
+    # Pong/paddle collision detection
+    if paddle1.rect.colliderect(pong):
+        pong.dx *= -1
+    if paddle2.rect.colliderect(pong):
+        pong.dx *= -1
+
+    # Win detection
+    #if pong.rect.x <= 0:
+        #Win statement for player 2
+    #if pong.rect.x >= WIDTH - 10:
+        #Win statement for player 1
+
+    draw_screen()
