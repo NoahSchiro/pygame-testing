@@ -102,9 +102,11 @@ while 1:
     
     # Pong/paddle collision detection
     if paddle1.rect.colliderect(pong):
-        pong.dx *= -1
+        pong.dx *= -1.0
+        print(pong.dx)
     if paddle2.rect.colliderect(pong):
-        pong.dx *= -1
+        pong.dx *= -1.0
+        print(pong.dx)
 
     # Win detection
     #if pong.rect.x <= 0:
