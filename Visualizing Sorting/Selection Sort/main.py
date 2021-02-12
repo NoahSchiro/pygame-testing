@@ -1,10 +1,9 @@
 import pygame
 import random
-from sorting import bubble_sort
 pygame.init()
 
 # Constants
-WIDTH, HEIGHT = 750, 500
+WIDTH, HEIGHT = 1500, 500
 BLACK = 0,0,0
 WHITE = 255,255,255
 
@@ -26,10 +25,9 @@ def draw_lines(a_list):
 
 
 
-# Bubble sort stuff
+# Selection sort stuff
 n = len(values)
 i = 0
-j = 0
 
 while 1:
 
@@ -43,22 +41,28 @@ while 1:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-
-    print(i, j)
-
     
+    # If i is greater than or equal 
+    # to the length of the array,
+    # don't do selection sort stuff
+    if(i < n):
 
-    if i < n:
-        j += 1
-        if j >= n-i-1:
-            j = 0
-            i += 1
-    else:
-        break
+        # Assume that i is the smallest element
+        jMinimum = i
 
-    if values[j-1] > values[j]:
-        values[j-1], values[j] = values[j], values[j-1]
-    
+        # Test against elements after i to find the smallest
+        for j in range(i+1, n):
+
+            # If this element is less, then it's the new minimum
+            if(values[j] < values[jMinimum]):
+
+                jMinimum = j
+        
+        if(jMinimum != i):
+            print("debug")
+            values[i], values[jMinimum] = values[jMinimum], values[i]
+
+    i += 1
     
     # Draw each line
     draw_lines(values)

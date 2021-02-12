@@ -54,8 +54,6 @@ while 1:
     secondStopAngle = (now.second * 6) - 90
     minuteStopAngle = (now.minute * 6) - 90
     hourStopAngle   = (now.hour * 30)  - 90
-
-    print(str(hour) + ":" + str(minute) + ":" + str(second))
     
 
     pygame.display.update()
